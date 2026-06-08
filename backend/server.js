@@ -4,13 +4,28 @@ const cors = require('cors');
 const pool = require('./config/db');
 const fs = require('fs');
 const path = require('path');
+const { securityHeaders, createRateLimiter } = require('./middleware/security');
 
 const app = express();
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.disable('x-powered-by');
+app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : false);
+app.use(securityHeaders);
+app.use(createRateLimiter({ max: Number(process.env.RATE_LIMIT_MAX) || 300 }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -27,6 +42,17 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ message: 'Origin not allowed.' });
+  }
+
+  console.error(err);
+  return res.status(500).json({ message: 'Internal server error.' });
+});
+
 // Initialize DB schema
 const initDB = async () => {
   try {
@@ -41,5 +67,7 @@ const initDB = async () => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  await initDB();
+  if (process.env.NODE_ENV !== 'production' || process.env.AUTO_INIT_DB === 'true') {
+    await initDB();
+  }
 });

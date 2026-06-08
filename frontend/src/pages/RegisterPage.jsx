@@ -5,14 +5,14 @@ import { useAuth } from '../context/AuthContext';
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'buyer', phone: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (form.password.length < 6) return setError('Password must be at least 6 characters.');
+    if (form.password.length < 8) return setError('Password must be at least 8 characters.');
     setLoading(true);
     try {
       await register(form);
@@ -46,15 +46,8 @@ export default function RegisterPage() {
             <input placeholder="+1 (555) 000-0000" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
           </div>
           <div className="form-group">
-            <label>I am a...</label>
-            <select value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}>
-              <option value="buyer">Buyer / Renter</option>
-              <option value="agent">Real Estate Agent</option>
-            </select>
-          </div>
-          <div className="form-group">
             <label>Password</label>
-            <input required type="password" placeholder="Min. 6 characters" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
+            <input required type="password" placeholder="Min. 8 characters" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
           </div>
           <button type="submit" className="btn btn-primary btn-block" style={{ marginTop: 8 }} disabled={loading}>
             {loading ? 'Creating account...' : 'Create Account'}

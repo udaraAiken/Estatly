@@ -1,29 +1,31 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
+const { JWT_SECRET, JWT_EXPIRES } = require('../config/auth');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_EXPIRES = process.env.JWT_EXPIRES || '7d';
+const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 // Register
 const register = async (req, res) => {
-  const { name, email, password, role = 'buyer', phone } = req.body;
+  const { name, email, password, phone } = req.body;
+  const role = 'buyer';
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email and password are required.' });
   }
 
   try {
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const normalizedEmail = email.toLowerCase();
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
     if (existing.rows.length > 0) {
       return res.status(409).json({ message: 'Email already registered.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
     const result = await pool.query(
       `INSERT INTO users (name, email, password, role, phone)
        VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, phone, created_at`,
-      [name, email, hashedPassword, role, phone]
+      [name, normalizedEmail, hashedPassword, role, phone]
     );
 
     const user = result.rows[0];
@@ -45,7 +47,7 @@ const login = async (req, res) => {
   }
 
   try {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
     if (result.rows.length === 0) {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
