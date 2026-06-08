@@ -45,10 +45,26 @@ const updateInquiryStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   try {
-    const result = await pool.query(
-      `UPDATE inquiries SET status = $1 WHERE id = $2 RETURNING *`,
-      [status, id]
-    );
+    const result = req.user.role === 'admin'
+      ? await pool.query(
+        `UPDATE inquiries SET status = $1 WHERE id = $2 RETURNING *`,
+        [status, id]
+      )
+      : await pool.query(
+        `UPDATE inquiries i
+         SET status = $1
+         FROM properties p
+         WHERE i.id = $2
+           AND i.property_id = p.id
+           AND p.agent_id = $3
+         RETURNING i.*`,
+        [status, id, req.user.id]
+      );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Inquiry not found or not authorized.' });
+    }
+
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ message: 'Error updating inquiry.' });
