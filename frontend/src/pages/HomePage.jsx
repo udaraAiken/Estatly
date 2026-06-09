@@ -33,6 +33,7 @@ export default function HomePage() {
     if (search.query) params.set('search', search.query);
     if (search.listing_type) params.set('listing_type', search.listing_type);
     if (search.property_type) params.set('property_type', search.property_type);
+    if (search.bedrooms) params.set('bedrooms', search.bedrooms);
     navigate(`/listings?${params.toString()}`);
   };
 

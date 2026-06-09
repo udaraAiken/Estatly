@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
-const { register, login, getMe } = require('../controllers/authController');
+const { register, login, refresh, logout, getMe } = require('../controllers/authController');
 const { authMiddleware } = require('../middleware/auth');
 const { createRateLimiter } = require('../middleware/security');
 const validate = require('../middleware/validate');
@@ -18,6 +18,14 @@ router.post('/login', authLimiter, [
   body('email').trim().isEmail().normalizeEmail().withMessage('A valid email is required.'),
   body('password').isLength({ min: 1, max: 128 }).withMessage('Password is required.'),
 ], validate, login);
+
+router.post('/refresh', authLimiter, [
+  body('refreshToken').isString().isLength({ min: 64, max: 256 }).withMessage('Refresh token is required.'),
+], validate, refresh);
+
+router.post('/logout', [
+  body('refreshToken').optional({ checkFalsy: true }).isString().isLength({ min: 64, max: 256 }).withMessage('Refresh token is invalid.'),
+], validate, logout);
 
 router.get('/me', authMiddleware, getMe);
 

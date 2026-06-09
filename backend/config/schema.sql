@@ -51,6 +51,17 @@ CREATE TABLE IF NOT EXISTS saved_properties (
   UNIQUE(user_id, property_id)
 );
 
+-- Refresh tokens for rotating JWT sessions
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  token_hash VARCHAR(64) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  revoked_at TIMESTAMP,
+  replaced_by_hash VARCHAR(64),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Inquiries / Contact requests
 CREATE TABLE IF NOT EXISTS inquiries (
   id SERIAL PRIMARY KEY,
@@ -80,6 +91,8 @@ CREATE INDEX IF NOT EXISTS idx_properties_listing_type ON properties(listing_typ
 CREATE INDEX IF NOT EXISTS idx_properties_price ON properties(price);
 CREATE INDEX IF NOT EXISTS idx_properties_agent ON properties(agent_id);
 CREATE INDEX IF NOT EXISTS idx_inquiries_property ON inquiries(property_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_hash ON refresh_tokens(token_hash);
 
 -- Sample seed data
 INSERT INTO users (name, email, password, role, phone) VALUES

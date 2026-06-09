@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
     localStorage.setItem('token', res.data.token);
+    localStorage.setItem('refreshToken', res.data.refreshToken);
     localStorage.setItem('user', JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
@@ -21,13 +22,23 @@ export function AuthProvider({ children }) {
   const register = async (data) => {
     const res = await api.post('/auth/register', data);
     localStorage.setItem('token', res.data.token);
+    localStorage.setItem('refreshToken', res.data.refreshToken);
     localStorage.setItem('user', JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      try {
+        await api.post('/auth/logout', { refreshToken });
+      } catch (err) {
+        console.error('Logout request failed:', err);
+      }
+    }
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     setUser(null);
   };
