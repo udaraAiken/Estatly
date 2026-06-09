@@ -98,6 +98,7 @@ CREATE INDEX IF NOT EXISTS idx_refresh_tokens_hash ON refresh_tokens(token_hash)
 INSERT INTO users (name, email, password, role, phone) VALUES
 ('Admin User', 'admin@realestate.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '555-0100'),
 ('Sarah Johnson', 'sarah@realestate.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'agent', '555-0101'),
+('Drake Johnson', 'madu12dara@gmail.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'agent', '555-0101'),
 ('Mike Chen', 'mike@realestate.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'agent', '555-0102')
 ON CONFLICT (email) DO NOTHING;
 
