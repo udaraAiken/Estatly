@@ -60,8 +60,8 @@ export default function PropertyCard({ property, onSaveToggle }) {
             <span>📍</span> {property.city}, {property.state}
           </div>
           <div className="property-card-specs">
-            {property.bedrooms && <div className="spec"><span className="spec-icon">🛏</span> {property.bedrooms} bd</div>}
-            {property.bathrooms && <div className="spec"><span className="spec-icon">🚿</span> {property.bathrooms} ba</div>}
+            {property.bedrooms && <div className="spec"><span className="spec-icon">🛏</span> {property.bedrooms} Bed Rooms</div>}
+            {property.bathrooms && <div className="spec"><span className="spec-icon">🚿</span> {property.bathrooms} Bath Rooms</div>}
             {property.area_sqft && <div className="spec"><span className="spec-icon">⬜</span> {formatArea(property.area_sqft)}</div>}
           </div>
         </div>

@@ -44,42 +44,6 @@ A full-stack real estate platform built with **MERN + PostgreSQL**.
 - Create/edit/delete listings
 - Manage inquiries with status updates
 
-## Quick Start
-
-### Option 1: Docker (Recommended)
-```bash
-git clone <repo>
-cd realestate
-docker-compose up --build
-```
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:5000
-
-### Option 2: Manual
-
-**Prerequisites:** Node.js 18+, PostgreSQL 15+
-
-**1. Setup Database**
-```bash
-psql -U postgres -c "CREATE DATABASE realestate_db;"
-```
-
-**2. Backend**
-```bash
-cd backend
-cp .env.example .env
-# Edit .env with your DB credentials
-npm install
-npm run dev
-```
-
-**3. Frontend**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
 ## API Endpoints
 
 ### Auth
@@ -118,11 +82,6 @@ inquiries      — property_id, user_id, name, email, message, status
 property_views — tracking table
 ```
 
-## Demo Accounts
-After running the seed:
-- **Agent 1:** sarah@realestate.com / password
-- **Agent 2:** mike@realestate.com / password
-
 ## Project Structure
 
 ```
@@ -150,4 +109,3 @@ realestate/
 - [ ] Payment processing for premium listings
 - [ ] Property comparison feature
 - [ ] Advanced analytics dashboard
-- [ ] Mobile app (React Native)
