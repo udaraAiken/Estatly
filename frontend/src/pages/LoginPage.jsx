@@ -51,11 +51,6 @@ export default function LoginPage() {
           Don't have an account? <Link to="/register" className="auth-link">Create one free</Link>
         </p>
 
-        <div style={{ marginTop: 20, padding: 16, background: 'var(--cream)', borderRadius: 6, fontSize: 13, color: 'var(--stone)' }}>
-          <strong>Demo Agents:</strong><br />
-          sarah@realestate.com / password<br />
-          mike@realestate.com / password
-        </div>
       </div>
     </div>
   );
