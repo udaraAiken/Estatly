@@ -1,17 +1,21 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCompare } from '../context/CompareContext';
 import { formatPrice, formatArea, propertyTypeLabel } from '../utils/format';
 import api from '../utils/api';
 import { useState } from 'react';
 
 export default function PropertyCard({ property, onSaveToggle }) {
   const { user } = useAuth();
+  const { addToCompare, removeFromCompare, isInCompare, canAdd } = useCompare();
   const [saved, setSaved] = useState(property.is_saved || false);
   const [saving, setSaving] = useState(false);
 
   const imgs = Array.isArray(property.images)
     ? property.images
     : (typeof property.images === 'string' ? JSON.parse(property.images || '[]') : []);
+
+  const inCompare = isInCompare(property.id);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -27,6 +31,15 @@ export default function PropertyCard({ property, onSaveToggle }) {
     setSaving(false);
   };
 
+  const handleCompare = (e) => {
+    e.preventDefault();
+    if (inCompare) {
+      removeFromCompare(property.id);
+    } else if (canAdd) {
+      addToCompare(property);
+    }
+  };
+
   const statusBadge = () => {
     if (property.status === 'sold') return <span className="property-card-badge badge-sold">Sold</span>;
     if (property.status === 'pending') return <span className="property-card-badge badge-pending">Pending</span>;
@@ -37,7 +50,7 @@ export default function PropertyCard({ property, onSaveToggle }) {
 
   return (
     <Link to={`/property/${property.id}`} style={{ textDecoration: 'none' }}>
-      <div className="property-card">
+      <div className={`property-card ${inCompare ? 'property-card--comparing' : ''}`}>
         <div className="property-card-img">
           <img
             src={imgs[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600'}
@@ -46,7 +59,12 @@ export default function PropertyCard({ property, onSaveToggle }) {
             onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600'; }}
           />
           {statusBadge()}
-          <button className={`property-card-save ${saved ? 'saved' : ''}`} onClick={handleSave} disabled={saving} title={saved ? 'Remove from saved' : 'Save property'}>
+          <button
+            className={`property-card-save ${saved ? 'saved' : ''}`}
+            onClick={handleSave}
+            disabled={saving}
+            title={saved ? 'Remove from saved' : 'Save property'}
+          >
             {saved ? '♥' : '♡'}
           </button>
         </div>
@@ -60,10 +78,19 @@ export default function PropertyCard({ property, onSaveToggle }) {
             <span>📍</span> {property.city}, {property.state}
           </div>
           <div className="property-card-specs">
-            {property.bedrooms && <div className="spec"><span className="spec-icon">🛏</span> {property.bedrooms} Bed Rooms</div>}
-            {property.bathrooms && <div className="spec"><span className="spec-icon">🚿</span> {property.bathrooms} Bath Rooms</div>}
+            {property.bedrooms && <div className="spec"><span className="spec-icon">🛏</span> {property.bedrooms} bd</div>}
+            {property.bathrooms && <div className="spec"><span className="spec-icon">🚿</span> {property.bathrooms} ba</div>}
             {property.area_sqft && <div className="spec"><span className="spec-icon">⬜</span> {formatArea(property.area_sqft)}</div>}
           </div>
+          {/* Compare toggle */}
+          <button
+            className={`compare-toggle-btn ${inCompare ? 'compare-toggle-btn--active' : ''}`}
+            onClick={handleCompare}
+            disabled={!inCompare && !canAdd}
+            title={!inCompare && !canAdd ? 'Max 4 properties' : inCompare ? 'Remove from comparison' : 'Add to comparison'}
+          >
+            {inCompare ? '⊖ Remove from compare' : '⊕ Compare'}
+          </button>
         </div>
       </div>
     </Link>
