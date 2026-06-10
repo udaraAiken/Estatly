@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCompare } from '../context/CompareContext';
 import api from '../utils/api';
 import { formatPrice, formatArea, propertyTypeLabel, timeAgo } from '../utils/format';
 
@@ -8,6 +9,7 @@ export default function PropertyDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { addToCompare, removeFromCompare, isInCompare, canAdd } = useCompare();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImg, setActiveImg] = useState(0);
@@ -91,9 +93,19 @@ export default function PropertyDetailPage() {
                 <h1 className="property-info-title">{property.title}</h1>
                 <div className="property-info-address">📍 {property.address}, {property.city}, {property.state} {property.zip_code}</div>
               </div>
-              <button className="btn btn-ghost" onClick={handleSave} style={{ fontSize: 20, padding: '8px 16px' }}>
-                {saved ? '♥ Saved' : '♡ Save'}
-              </button>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button
+                  className={`btn btn-ghost btn-sm ${isInCompare(property.id) ? 'compare-detail-btn--active' : ''}`}
+                  onClick={() => isInCompare(property.id) ? removeFromCompare(property.id) : addToCompare(property)}
+                  disabled={!isInCompare(property.id) && !canAdd}
+                  title={!isInCompare(property.id) && !canAdd ? 'Max 4 properties in compare' : ''}
+                >
+                  {isInCompare(property.id) ? '⊖ Remove compare' : '⊕ Compare'}
+                </button>
+                <button className="btn btn-ghost" onClick={handleSave} style={{ fontSize: 20, padding: '8px 16px' }}>
+                  {saved ? '♥ Saved' : '♡ Save'}
+                </button>
+              </div>
             </div>
           </div>
 
