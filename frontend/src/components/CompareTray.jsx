@@ -46,7 +46,7 @@ export default function CompareTray() {
             <div key={`empty-${i}`} className="compare-tray-slot compare-tray-slot--empty">
               <div className="compare-tray-slot-placeholder">
                 <span>+</span>
-                <span>Add property</span>
+                <span className='compare-tray-slot-placeholder-text'>Add property</span>
               </div>
             </div>
           ))}

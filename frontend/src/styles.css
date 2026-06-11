@@ -684,9 +684,12 @@ h3 { font-size: 1.5rem; }
 @media (max-width: 768px) {
   .compare-tray-slots { gap: 8px; }
   .compare-tray-slot-title { display: none; }
-  .compare-tray-inner { padding: 10px 16px; gap: 12px; }
+  .compare-tray-inner { padding: 10px 24px; gap: 12px; overflow-x:scroll}
   .compare-table { min-width: 640px; }
   .compare-label-col { width: 120px; min-width: 120px; }
   .compare-prop-col { min-width: 200px; }
   .compare-prop-gallery { height: 140px; }
+  .compare-tray-slot-info{ display: none; }
+  .compare-tray-slot {padding: 4px;flex: unset; width: 80px;}
+  .compare-tray-slot-placeholder-text{ display: none; }
 }
