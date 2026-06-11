@@ -142,8 +142,8 @@ const updateProperty = async (req, res) => {
     let idx = 1;
 
     const allowedFields = ['title','description','price','property_type','listing_type','status',
-      'bedrooms','bathrooms','area_sqft','lot_size','year_built','address','city','state',
-      'zip_code','features','images'];
+      'bedrooms','bathrooms','area_sqft','year_built','address','city','state',
+      'zip_code','features','images','latitude','longitude'];
 
     for (const field of allowedFields) {
       if (updates[field] !== undefined) {
