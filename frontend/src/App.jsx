@@ -14,6 +14,7 @@ import SavedPage from './pages/SavedPage';
 import ComparePage from './pages/ComparePage';
 import './styles.css';
 
+
 function PrivateRoute({ children, agentOnly }) {
   const { user, isAgent } = useAuth();
   if (!user) return <Navigate to="/login" />;

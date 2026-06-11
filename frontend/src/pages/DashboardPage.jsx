@@ -232,7 +232,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="form-group">
                     <label>Year Built</label>
-                    <input type="number" value={form.year_built} onChange={e => setForm(f => ({ ...f, year_built: e.target.value }))} />
+                    <input required type="number" value={form.year_built} onChange={e => setForm(f => ({ ...f, year_built: e.target.value }))} />
                   </div>
                   <div className="form-group" style={{ gridColumn: '1/-1' }}>
                     <label>Address *</label>
@@ -247,9 +247,18 @@ export default function DashboardPage() {
                     <input required value={form.state} onChange={e => setForm(f => ({ ...f, state: e.target.value }))} />
                   </div>
                   <div className="form-group">
+                    <label>Latitude *</label>
+                    <input required value={form.latitude} onChange={e => setForm(f => ({ ...f, latitude: e.target.value }))} />
+                  </div>
+                  <div className="form-group">
+                    <label>Longitude *</label>
+                    <input required value={form.longitude} onChange={e => setForm(f => ({ ...f, longitude: e.target.value }))} />
+                  </div>
+                  <div className="form-group">
                     <label>ZIP Code</label>
                     <input value={form.zip_code} onChange={e => setForm(f => ({ ...f, zip_code: e.target.value }))} />
                   </div>
+                  
                   <div className="form-group" style={{ gridColumn: '1/-1' }}>
                     <label>Features (comma-separated)</label>
                     <input value={form.features} onChange={e => setForm(f => ({ ...f, features: e.target.value }))} placeholder="Pool, Garage, Garden, Fireplace" />
@@ -262,6 +271,7 @@ export default function DashboardPage() {
                     <label>Description</label>
                     <textarea rows={4} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Describe the property..." />
                   </div>
+                  
                 </div>
                 <button type="submit" className="btn btn-gold" disabled={formLoading}>
                   {formLoading ? 'Saving...' : (editingId ? 'Update Listing' : 'Create Listing')}
