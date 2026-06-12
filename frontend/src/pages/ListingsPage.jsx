@@ -170,9 +170,7 @@ export default function ListingsPage() {
       </div>
 
       <div className="listings-page">
-        <div
-          style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 32 }}
-        >
+        <div className="listings-content">
           {/* SIDEBAR */}
           <div>
             <div className="sidebar-filters">

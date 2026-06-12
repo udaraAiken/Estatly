@@ -170,13 +170,13 @@ export default function HomePage() {
             <span className="section-label">✦ Why Estatly</span>
             <h2 className="section-title">The smarter way to find a home</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+          <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
             {[
               { icon: '🔍', title: 'Smart Search', desc: 'Filter by price, location, type, size and dozens of other criteria to find exactly what you want.' },
               { icon: '🤝', title: 'Expert Agents', desc: 'Connect directly with licensed agents who specialize in your target neighborhoods.' },
               { icon: '🔔', title: 'Save & Track', desc: 'Save your favorite properties, track price changes, and get notified of new listings.' },
             ].map(f => (
-              <div key={f.title} style={{ textAlign: 'center', padding: '32px 24px' }}>
+              <div className="feature-card" key={f.title} style={{ textAlign: 'center', padding: '32px 24px' }}>
                 <div style={{ fontSize: '2.5rem', marginBottom: 16 }}>{f.icon}</div>
                 <h3 style={{ fontFamily: 'var(--font-serif)', marginBottom: 12 }}>{f.title}</h3>
                 <p style={{ color: 'var(--stone)', lineHeight: 1.8, fontSize: 14 }}>{f.desc}</p>
